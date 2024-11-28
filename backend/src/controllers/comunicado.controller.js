@@ -1,11 +1,10 @@
 import { createComunicadoSchema, updateComunicadoSchema } from '../schemas/comunicado.schema.js';
-import { ComunicadoModel } from '../models/comunicado.model.js';
-import { saveFile } from '../utils/file.js';
+import { ComunicadoService } from '../services/comunicado.service.js';
 
 export class ComunicadoController {
   static async create(req, res) {
     try {
-      const data = createComunicadoSchema.parse(req.body);
+      const data = createComunicadoSchema.parse(JSON.parse(req.body.data));
       let adjunto = null;
 
       if (req.files?.adjunto) {
@@ -15,21 +14,14 @@ export class ComunicadoController {
         if (!validTypes.includes(file.mimetype)) {
           return res.status(400).json({ message: 'El adjunto debe ser un archivo PDF o Excel' });
         }
-        adjunto = `${Date.now()}_${file.name}`;
+        adjunto = file;
       }
 
-      const comunicado = await ComunicadoModel.create({
+      const comunicado = await ComunicadoService.create({
         ...data,
         adjunto,
         usuario: 'system' // TODO: Get from auth
       });
-
-      if (adjunto) {
-        await saveFile(
-          req.files.adjunto,
-          `comunicado/${comunicado.idcomunicado}/${adjunto}`
-        );
-      }
 
       res.status(201).json(comunicado);
     } catch (error) {
@@ -43,7 +35,7 @@ export class ComunicadoController {
   static async update(req, res) {
     try {
       const { id } = req.params;
-      const data = updateComunicadoSchema.parse(req.body);
+      const data = updateComunicadoSchema.parse(JSON.parse(req.body.data));
       let adjunto = null;
 
       if (req.files?.adjunto) {
@@ -53,10 +45,10 @@ export class ComunicadoController {
         if (!validTypes.includes(file.mimetype)) {
           return res.status(400).json({ message: 'El adjunto debe ser un archivo PDF o Excel' });
         }
-        adjunto = `${Date.now()}_${file.name}`;
+        adjunto = file;
       }
 
-      const comunicado = await ComunicadoModel.update(id, {
+      const comunicado = await ComunicadoService.update(id, {
         ...data,
         adjunto,
         usuario: 'system' // TODO: Get from auth
@@ -66,13 +58,6 @@ export class ComunicadoController {
         return res.status(404).json({ 
           message: 'Comunicado no encontrado o no se puede editar porque ya está confirmado' 
         });
-      }
-
-      if (adjunto) {
-        await saveFile(
-          req.files.adjunto,
-          `comunicado/${comunicado.idcomunicado}/${adjunto}`
-        );
       }
 
       res.json(comunicado);
@@ -87,7 +72,7 @@ export class ComunicadoController {
   static async findAll(req, res) {
     try {
       const { fechaEmisionInicio, fechaEmisionFin, tipoReceptor, estado } = req.query;
-      const comunicados = await ComunicadoModel.findAll({
+      const comunicados = await ComunicadoService.findAll({
         fechaEmisionInicio,
         fechaEmisionFin,
         tipoReceptor: tipoReceptor ? parseInt(tipoReceptor) : null,
@@ -102,7 +87,7 @@ export class ComunicadoController {
   static async findById(req, res) {
     try {
       const { id } = req.params;
-      const comunicado = await ComunicadoModel.findById(id);
+      const comunicado = await ComunicadoService.findById(id);
       
       if (!comunicado) {
         return res.status(404).json({ message: 'Comunicado no encontrado' });
@@ -117,7 +102,7 @@ export class ComunicadoController {
   static async confirmar(req, res) {
     try {
       const { id } = req.params;
-      const comunicado = await ComunicadoModel.confirmar(id, 'system'); // TODO: Get from auth
+      const comunicado = await ComunicadoService.confirmar(id, 'system'); // TODO: Get from auth
       res.json(comunicado);
     } catch (error) {
       if (error.message === 'Comunicado no encontrado o ya confirmado') {

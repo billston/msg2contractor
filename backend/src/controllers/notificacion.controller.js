@@ -1,6 +1,5 @@
 import { respuestaSchema } from '../schemas/notificacion.schema.js';
-import { NotificacionModel } from '../models/notificacion.model.js';
-import { saveFile } from '../utils/file.js';
+import { NotificacionService } from '../services/notificacion.service.js';
 import { sendEmail } from '../utils/email.js';
 
 export class NotificacionController {
@@ -21,7 +20,7 @@ export class NotificacionController {
         });
       }
 
-      const notificaciones = await NotificacionModel.findAll({
+      const notificaciones = await NotificacionService.findAll({
         fechaEmisionInicio,
         fechaEmisionFin,
         fechaRecepcion,
@@ -39,7 +38,7 @@ export class NotificacionController {
   static async findById(req, res) {
     try {
       const { id } = req.params;
-      const notificacion = await NotificacionModel.findById(id);
+      const notificacion = await NotificacionService.findById(id);
 
       if (!notificacion) {
         return res.status(404).json({ message: 'Notificación no encontrada' });
@@ -54,7 +53,7 @@ export class NotificacionController {
   static async confirmarRecepcion(req, res) {
     try {
       const { id } = req.params;
-      const notificacion = await NotificacionModel.confirmarRecepcion(id, 'system'); // TODO: Get from auth
+      const notificacion = await NotificacionService.confirmarRecepcion(id, 'system'); // TODO: Get from auth
 
       if (!notificacion) {
         return res.status(404).json({
@@ -78,7 +77,7 @@ export class NotificacionController {
   static async responder(req, res) {
     try {
       const { id } = req.params;
-      const data = respuestaSchema.parse(req.body);
+      const data = respuestaSchema.parse(JSON.parse(req.body.data));
       let adjunto = null;
 
       if (req.files?.adjunto) {
@@ -88,10 +87,10 @@ export class NotificacionController {
         if (!validTypes.includes(file.mimetype)) {
           return res.status(400).json({ message: 'El adjunto debe ser un archivo PDF o Excel' });
         }
-        adjunto = `${Date.now()}_${file.name}`;
+        adjunto = file;
       }
 
-      const notificacion = await NotificacionModel.responder(id, {
+      const notificacion = await NotificacionService.responder(id, {
         ...data,
         adjunto,
         usuario: 'system', // TODO: Get from auth
@@ -101,13 +100,6 @@ export class NotificacionController {
         return res.status(404).json({
           message: 'Notificación no encontrada o no está en estado recibido',
         });
-      }
-
-      if (adjunto) {
-        await saveFile(
-          req.files.adjunto,
-          `notificacion/${notificacion.idnotificacion}/${adjunto}`
-        );
       }
 
       // Send email notification

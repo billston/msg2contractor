@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 import { swaggerSpec } from './config/swagger.js';
+import { initDatabase } from './database/config.js';
 import { receptorRoutes } from './routes/receptor.routes.js';
 import { grupoRoutes } from './routes/grupo.routes.js';
 import { comunicadoRoutes } from './routes/comunicado.routes.js';
@@ -18,6 +19,9 @@ config();
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Initialize database connection
+await initDatabase();
 
 // Middlewares
 app.use(cors());

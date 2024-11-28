@@ -1,11 +1,11 @@
 import { createGrupoSchema, updateGrupoSchema, addMiembroSchema } from '../schemas/grupo.schema.js';
-import { GrupoModel } from '../models/grupo.model.js';
+import { GrupoService } from '../services/grupo.service.js';
 
 export class GrupoController {
   static async create(req, res) {
     try {
       const data = createGrupoSchema.parse(req.body);
-      const grupo = await GrupoModel.create({
+      const grupo = await GrupoService.create({
         ...data,
         usuario: 'system' // TODO: Get from auth
       });
@@ -23,7 +23,7 @@ export class GrupoController {
       const { id } = req.params;
       const data = updateGrupoSchema.parse(req.body);
       
-      const grupo = await GrupoModel.update(id, {
+      const grupo = await GrupoService.update(id, {
         ...data,
         usuario: 'system' // TODO: Get from auth
       });
@@ -45,14 +45,14 @@ export class GrupoController {
     try {
       const { id } = req.params;
 
-      const hasComunicados = await GrupoModel.hasComunicados(id);
+      const hasComunicados = await GrupoService.hasComunicados(id);
       if (hasComunicados) {
         return res.status(409).json({
           message: 'No se puede eliminar el grupo porque tiene comunicados asociados'
         });
       }
 
-      const grupo = await GrupoModel.delete(id);
+      const grupo = await GrupoService.delete(id);
       if (!grupo) {
         return res.status(404).json({ message: 'Grupo no encontrado' });
       }
@@ -66,7 +66,10 @@ export class GrupoController {
   static async findAll(req, res) {
     try {
       const { nombre, nombreMiembro } = req.query;
-      const grupos = await GrupoModel.findAll({ nombre, nombreMiembro });
+      const grupos = await GrupoService.findAll({
+        nombre,
+        nombreMiembro,
+      });
       res.json(grupos);
     } catch (error) {
       throw error;
@@ -76,7 +79,7 @@ export class GrupoController {
   static async findById(req, res) {
     try {
       const { id } = req.params;
-      const grupo = await GrupoModel.findById(id);
+      const grupo = await GrupoService.findById(id);
       
       if (!grupo) {
         return res.status(404).json({ message: 'Grupo no encontrado' });
@@ -94,17 +97,17 @@ export class GrupoController {
       const { id: idGrupoReceptor } = req.params;
       const data = addMiembroSchema.parse(req.body);
 
-      const grupo = await GrupoModel.findById(idGrupoReceptor);
+      const grupo = await GrupoService.findById(idGrupoReceptor);
       if (!grupo) {
         return res.status(404).json({ message: 'Grupo no encontrado' });
       }
 
-      const isMiembro = await GrupoModel.isMiembro(idGrupoReceptor, data.idReceptor);
+      const isMiembro = await GrupoService.isMiembro(idGrupoReceptor, data.idReceptor);
       if (isMiembro) {
         return res.status(400).json({ message: 'El receptor ya es miembro del grupo' });
       }
 
-      const miembro = await GrupoModel.addMiembro({
+      const miembro = await GrupoService.addMiembro({
         idGrupoReceptor,
         idReceptor: data.idReceptor,
         usuario: 'system' // TODO: Get from auth
@@ -123,7 +126,7 @@ export class GrupoController {
     try {
       const { id: idGrupoReceptor, idReceptor } = req.params;
 
-      const miembro = await GrupoModel.removeMiembro(idGrupoReceptor, idReceptor);
+      const miembro = await GrupoService.removeMiembro(idGrupoReceptor, idReceptor);
       if (!miembro) {
         return res.status(404).json({ message: 'Miembro no encontrado en el grupo' });
       }
@@ -137,7 +140,7 @@ export class GrupoController {
   static async getMiembros(req, res) {
     try {
       const { id } = req.params;
-      const miembros = await GrupoModel.getMiembros(id);
+      const miembros = await GrupoService.getMiembros(id);
       res.json(miembros);
     } catch (error) {
       throw error;

@@ -1,9 +1,5 @@
-import {
-  createReceptorSchema,
-  updateReceptorSchema,
-} from '../schemas/receptor.schema.js';
-import { ReceptorModel } from '../models/receptor.model.js';
-import { saveFile } from '../utils/file.js';
+import { createReceptorSchema, updateReceptorSchema } from '../schemas/receptor.schema.js';
+import { ReceptorService } from '../services/receptor.service.js';
 
 export class ReceptorController {
   static async create(req, res) {
@@ -14,25 +10,16 @@ export class ReceptorController {
       if (req.files?.firma) {
         const file = req.files.firma;
         if (!file.mimetype.startsWith('image/jpeg')) {
-          return res
-            .status(400)
-            .json({ message: 'La firma debe ser una imagen JPG' });
+          return res.status(400).json({ message: 'La firma debe ser una imagen JPG' });
         }
-        firma = `${Date.now()}_${file.name}`;
+        firma = file;
       }
 
-      const receptor = await ReceptorModel.create({
+      const receptor = await ReceptorService.create({
         ...data,
         firma,
         usuario: 'system', // TODO: Get from auth
       });
-
-      if (firma) {
-        await saveFile(
-          req.files.firma,
-          `receptor/firma/${receptor.idreceptor}/${firma}`
-        );
-      }
 
       res.status(201).json(receptor);
     } catch (error) {
@@ -52,14 +39,12 @@ export class ReceptorController {
       if (req.files?.firma) {
         const file = req.files.firma;
         if (!file.mimetype.startsWith('image/jpeg')) {
-          return res
-            .status(400)
-            .json({ message: 'La firma debe ser una imagen JPG' });
+          return res.status(400).json({ message: 'La firma debe ser una imagen JPG' });
         }
-        firma = `${Date.now()}_${file.name}`;
+        firma = file;
       }
 
-      const receptor = await ReceptorModel.update(id, {
+      const receptor = await ReceptorService.update(id, {
         ...data,
         firma,
         usuario: 'system', // TODO: Get from auth
@@ -67,13 +52,6 @@ export class ReceptorController {
 
       if (!receptor) {
         return res.status(404).json({ message: 'Receptor no encontrado' });
-      }
-
-      if (firma) {
-        await saveFile(
-          req.files.firma,
-          `receptor/firma/${receptor.idreceptor}/${firma}`
-        );
       }
 
       res.json(receptor);
@@ -89,15 +67,14 @@ export class ReceptorController {
     try {
       const { id } = req.params;
 
-      const hasNotifications = await ReceptorModel.hasNotifications(id);
+      const hasNotifications = await ReceptorService.hasNotifications(id);
       if (hasNotifications) {
         return res.status(409).json({
-          message:
-            'No se puede eliminar el receptor porque tiene notificaciones asociadas',
+          message: 'No se puede eliminar el receptor porque tiene notificaciones asociadas'
         });
       }
 
-      const receptor = await ReceptorModel.delete(id);
+      const receptor = await ReceptorService.delete(id);
       if (!receptor) {
         return res.status(404).json({ message: 'Receptor no encontrado' });
       }
@@ -111,7 +88,7 @@ export class ReceptorController {
   static async findAll(req, res) {
     try {
       const { codigo, nombreCompleto } = req.query;
-      const receptores = await ReceptorModel.findAll({
+      const receptores = await ReceptorService.findAll({
         codigo,
         nombreCompleto,
       });
@@ -124,7 +101,7 @@ export class ReceptorController {
   static async findById(req, res) {
     try {
       const { id } = req.params;
-      const receptor = await ReceptorModel.findById(id);
+      const receptor = await ReceptorService.findById(id);
 
       if (!receptor) {
         return res.status(404).json({ message: 'Receptor no encontrado' });
