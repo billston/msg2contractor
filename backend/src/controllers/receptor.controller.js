@@ -111,7 +111,6 @@ export class ReceptorController {
   static async findAll(req, res) {
     try {
       const { codigo, nombreCompleto } = req.query;
-      console.log(req.query);
       const receptores = await ReceptorModel.findAll({
         codigo,
         nombreCompleto,
