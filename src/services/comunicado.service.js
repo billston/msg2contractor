@@ -130,7 +130,7 @@ export class ComunicadoService {
           attributes: ['nombre']
         }
       ],
-      order: [['fechaCreacion', 'DESC']]
+      order: [['fecha_emision', 'DESC']]
     });
   }
 
