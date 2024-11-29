@@ -8,40 +8,40 @@ const Notificacion = sequelize.define('Notificacion', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    field: 'idnotificacion'
+    field: 'id_notificacion'
   },
   idComunicado: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    field: 'idcomunicado',
+    field: 'id_comunicado',
     references: {
       model: Comunicado,
-      key: 'idcomunicado'
+      key: 'id_comunicado'
     }
   },
   idReceptor: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    field: 'idreceptor',
+    field: 'id_receptor',
     references: {
       model: Receptor,
-      key: 'idreceptor'
+      key: 'id_receptor'
     }
   },
   fechaEmision: {
     type: DataTypes.DATE,
     allowNull: false,
-    field: 'fechaemision'
+    field: 'fecha_emision'
   },
   fechaRecepcion: {
     type: DataTypes.DATE,
     allowNull: true,
-    field: 'fecharecepcion'
+    field: 'fecha_recepcion'
   },
   fechaRespuesta: {
     type: DataTypes.DATE,
     allowNull: true,
-    field: 'fecharespuesta'
+    field: 'fecha_respuesta'
   },
   respuesta: {
     type: DataTypes.TEXT,
@@ -55,27 +55,27 @@ const Notificacion = sequelize.define('Notificacion', {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 1,
-    field: 'idestadonotificacion'
+    field: 'id_estado_notificacion'
   },
   creadoPor: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'creadopor'
+    field: 'creado_por'
   },
   actualizadoPor: {
     type: DataTypes.STRING,
     allowNull: true,
-    field: 'actualizadopor'
+    field: 'actualizado_por'
   }
 }, {
   tableName: 'notificacion',
   timestamps: true,
-  createdAt: 'fechacreacion',
-  updatedAt: 'fechaactualizacion'
+  createdAt: 'fecha_creacion',
+  updatedAt: 'fecha_actualizacion'
 });
 
 // Define associations
-Notificacion.belongsTo(Comunicado, { foreignKey: 'idcomunicado' });
-Notificacion.belongsTo(Receptor, { foreignKey: 'idreceptor' });
+Notificacion.belongsTo(Comunicado, { foreignKey: 'id_comunicado' });
+Notificacion.belongsTo(Receptor, { foreignKey: 'id_receptor' });
 
 export default Notificacion;

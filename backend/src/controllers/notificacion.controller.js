@@ -1,6 +1,7 @@
 import { respuestaSchema } from '../schemas/notificacion.schema.js';
 import { NotificacionService } from '../services/notificacion.service.js';
 import { sendEmail } from '../utils/email.js';
+import { handleError } from '../utils/errorHandler.js';
 
 export class NotificacionController {
   static async findAll(req, res) {
@@ -31,7 +32,7 @@ export class NotificacionController {
 
       res.json(notificaciones);
     } catch (error) {
-      throw error;
+      handleError(error, res);
     }
   }
 
@@ -46,7 +47,7 @@ export class NotificacionController {
 
       res.json(notificacion);
     } catch (error) {
-      throw error;
+      handleError(error, res);
     }
   }
 
@@ -70,7 +71,7 @@ export class NotificacionController {
 
       res.json(notificacion);
     } catch (error) {
-      throw error;
+      handleError(error, res);
     }
   }
 
@@ -114,7 +115,7 @@ export class NotificacionController {
       if (error.name === 'ZodError') {
         return res.status(400).json({ errors: error.errors });
       }
-      throw error;
+      handleError(error, res);
     }
   }
 }

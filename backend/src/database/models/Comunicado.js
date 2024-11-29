@@ -7,20 +7,20 @@ const Comunicado = sequelize.define('Comunicado', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    field: 'idcomunicado'
+    field: 'id_comunicado'
   },
   tipoReceptor: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    field: 'tiporeceptor'
+    field: 'tipo_receptor'
   },
   idGrupoReceptor: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    field: 'idgruporeceptor',
+    field: 'id_grupo_receptor',
     references: {
       model: GrupoReceptor,
-      key: 'idgruporeceptor'
+      key: 'id_grupo_receptor'
     }
   },
   destinatario: {
@@ -42,49 +42,49 @@ const Comunicado = sequelize.define('Comunicado', {
   fechaEmision: {
     type: DataTypes.DATE,
     allowNull: true,
-    field: 'fechaemision'
+    field: 'fecha_emision'
   },
   fechaVencimiento: {
     type: DataTypes.DATE,
     allowNull: true,
-    field: 'fechavencimiento'
+    field: 'fecha_vencimiento'
   },
   confirmacionRecepcion: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false,
-    field: 'confirmacionrecepcion'
+    field: 'confirmacion_recepcion'
   },
   solicitarRespuesta: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false,
-    field: 'solicitarrespuesta'
+    field: 'solicitar_respuesta'
   },
   idEstadoComunicado: {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 1,
-    field: 'idestadocomunicado'
+    field: 'id_estado_comunicado'
   },
   creadoPor: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'creadopor'
+    field: 'creado_por'
   },
   actualizadoPor: {
     type: DataTypes.STRING,
     allowNull: true,
-    field: 'actualizadopor'
+    field: 'actualizado_por'
   }
 }, {
   tableName: 'comunicado',
   timestamps: true,
-  createdAt: 'fechacreacion',
-  updatedAt: 'fechaactualizacion'
+  createdAt: 'fecha_creacion',
+  updatedAt: 'fecha_actualizacion'
 });
 
 // Define associations
-Comunicado.belongsTo(GrupoReceptor, { foreignKey: 'idgruporeceptor' });
+Comunicado.belongsTo(GrupoReceptor, { foreignKey: 'id_grupo_receptor' });
 
 export default Comunicado;

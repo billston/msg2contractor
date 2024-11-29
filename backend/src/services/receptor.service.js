@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { Receptor } from '../database/models/index.js';
+import { Receptor, Notificacion } from '../database/models/index.js';
 import { saveFile } from '../utils/file.js';
 
 export class ReceptorService {
@@ -8,10 +8,10 @@ export class ReceptorService {
       codigo,
       nombreCompleto,
       correoElectronico,
-      firma,
+      firma: firma ? firma.name : '',
       creadoPor: usuario
     });
-
+    
     if (firma) {
       await saveFile(
         firma,
@@ -80,9 +80,9 @@ export class ReceptorService {
   }
 
   static async hasNotifications(id) {
-    const receptor = await Receptor.findByPk(id, {
-      include: ['Notificaciones']
+    const notificaciones = await Notificacion.findAll({
+      where: { idReceptor: id }
     });
-    return receptor?.Notificaciones?.length > 0;
+    return notificaciones.length > 0;
   }
 }

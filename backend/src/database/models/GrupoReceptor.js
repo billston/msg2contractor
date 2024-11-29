@@ -6,7 +6,7 @@ const GrupoReceptor = sequelize.define('GrupoReceptor', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    field: 'idgruporeceptor'
+    field: 'id_grupo_receptor'
   },
   nombre: {
     type: DataTypes.STRING,
@@ -15,18 +15,18 @@ const GrupoReceptor = sequelize.define('GrupoReceptor', {
   creadoPor: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'creadopor'
+    field: 'creado_por'
   },
   actualizadoPor: {
     type: DataTypes.STRING,
     allowNull: true,
-    field: 'actualizadopor'
+    field: 'actualizado_por'
   }
 }, {
-  tableName: 'gruporeceptor',
+  tableName: 'grupo_receptor',
   timestamps: true,
-  createdAt: 'fechacreacion',
-  updatedAt: 'fechaactualizacion'
+  createdAt: 'fecha_creacion',
+  updatedAt: 'fecha_actualizacion'
 });
 
 export default GrupoReceptor;

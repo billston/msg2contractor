@@ -15,11 +15,11 @@ export function useReceptores() {
   const createReceptor = useMutation({
     mutationFn: async ({ data, firma }: { data: ReceptorFormData; firma?: File }) => {
       const formData = new FormData();
-      formData.append('data', JSON.stringify(data));
+      Object.entries(data).forEach(([key, value]) => formData.append(key, value));
       if (firma) {
         formData.append('firma', firma);
       }
-
+      
       const response = await api.post<Receptor>('/receptores', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -47,7 +47,7 @@ export function useReceptores() {
       firma?: File;
     }) => {
       const formData = new FormData();
-      formData.append('data', JSON.stringify(data));
+      Object.entries(data).forEach(([key, value]) => formData.append(key, value));
       if (firma) {
         formData.append('firma', firma);
       }

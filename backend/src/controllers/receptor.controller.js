@@ -1,12 +1,13 @@
 import { createReceptorSchema, updateReceptorSchema } from '../schemas/receptor.schema.js';
 import { ReceptorService } from '../services/receptor.service.js';
+import { handleError } from '../utils/errorHandler.js';
 
 export class ReceptorController {
   static async create(req, res) {
     try {
       const data = createReceptorSchema.parse(req.body);
       let firma = null;
-
+      
       if (req.files?.firma) {
         const file = req.files.firma;
         if (!file.mimetype.startsWith('image/jpeg')) {
@@ -23,10 +24,7 @@ export class ReceptorController {
 
       res.status(201).json(receptor);
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ errors: error.errors });
-      }
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -56,10 +54,7 @@ export class ReceptorController {
 
       res.json(receptor);
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ errors: error.errors });
-      }
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -81,7 +76,7 @@ export class ReceptorController {
 
       res.json({ message: 'Receptor eliminado exitosamente' });
     } catch (error) {
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -94,7 +89,7 @@ export class ReceptorController {
       });
       res.json(receptores);
     } catch (error) {
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -109,7 +104,7 @@ export class ReceptorController {
 
       res.json(receptor);
     } catch (error) {
-      throw error;
+      handleError(res, error);
     }
   }
 }

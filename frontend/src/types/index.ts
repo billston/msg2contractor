@@ -1,13 +1,13 @@
 export interface Receptor {
-  idreceptor: number;
+  idReceptor: number;
   codigo: string;
-  nombrecompleto: string;
-  correoelectronico: string;
+  nombreCompleto: string;
+  correoElectronico: string;
   firma?: string;
-  fechacreacion: string;
-  creadopor: string;
-  fechaactualizacion?: string;
-  actualizadopor?: string;
+  fechaCreacion: string;
+  creadoPor: string;
+  fechaActualizacion?: string;
+  actualizadoPor?: string;
 }
 
 export interface GrupoReceptor {

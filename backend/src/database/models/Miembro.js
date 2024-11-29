@@ -8,45 +8,45 @@ const Miembro = sequelize.define('Miembro', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    field: 'idmiembro'
+    field: 'id_miembro'
   },
   idGrupoReceptor: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    field: 'idgruporeceptor',
+    field: 'id_grupo_receptor',
     references: {
       model: GrupoReceptor,
-      key: 'idgruporeceptor'
+      key: 'id_grupo_receptor'
     }
   },
   idReceptor: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    field: 'idreceptor',
+    field: 'id_receptor',
     references: {
       model: Receptor,
-      key: 'idreceptor'
+      key: 'id_receptor'
     }
   },
   creadoPor: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'creadopor'
+    field: 'creado_por'
   },
   actualizadoPor: {
     type: DataTypes.STRING,
     allowNull: true,
-    field: 'actualizadopor'
+    field: 'actualizado_por'
   }
 }, {
   tableName: 'miembro',
   timestamps: true,
-  createdAt: 'fechacreacion',
-  updatedAt: 'fechaactualizacion'
+  createdAt: 'fecha_creacion',
+  updatedAt: 'fecha_actualizacion'
 });
 
 // Define associations
-GrupoReceptor.belongsToMany(Receptor, { through: Miembro, foreignKey: 'idgruporeceptor' });
-Receptor.belongsToMany(GrupoReceptor, { through: Miembro, foreignKey: 'idreceptor' });
+GrupoReceptor.belongsToMany(Receptor, { through: Miembro, foreignKey: 'id_grupo_receptor' });
+Receptor.belongsToMany(GrupoReceptor, { through: Miembro, foreignKey: 'id_receptor' });
 
 export default Miembro;

@@ -1,5 +1,6 @@
 import { createComunicadoSchema, updateComunicadoSchema } from '../schemas/comunicado.schema.js';
 import { ComunicadoService } from '../services/comunicado.service.js';
+import { handleError } from '../utils/errorHandler.js';
 
 export class ComunicadoController {
   static async create(req, res) {
@@ -25,10 +26,7 @@ export class ComunicadoController {
 
       res.status(201).json(comunicado);
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ errors: error.errors });
-      }
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -62,10 +60,7 @@ export class ComunicadoController {
 
       res.json(comunicado);
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ errors: error.errors });
-      }
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -80,7 +75,7 @@ export class ComunicadoController {
       });
       res.json(comunicados);
     } catch (error) {
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -95,7 +90,7 @@ export class ComunicadoController {
 
       res.json(comunicado);
     } catch (error) {
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -105,10 +100,7 @@ export class ComunicadoController {
       const comunicado = await ComunicadoService.confirmar(id, 'system'); // TODO: Get from auth
       res.json(comunicado);
     } catch (error) {
-      if (error.message === 'Comunicado no encontrado o ya confirmado') {
-        return res.status(404).json({ message: error.message });
-      }
-      throw error;
+      handleError(res, error);
     }
   }
 }

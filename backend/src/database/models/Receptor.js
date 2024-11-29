@@ -6,7 +6,7 @@ const Receptor = sequelize.define('Receptor', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    field: 'idreceptor'
+    field: 'id_receptor'
   },
   codigo: {
     type: DataTypes.STRING,
@@ -16,12 +16,12 @@ const Receptor = sequelize.define('Receptor', {
   nombreCompleto: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'nombrecompleto'
+    field: 'nombre_completo'
   },
   correoElectronico: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'correoelectronico'
+    field: 'correo_electronico'
   },
   firma: {
     type: DataTypes.STRING,
@@ -30,18 +30,18 @@ const Receptor = sequelize.define('Receptor', {
   creadoPor: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'creadopor'
+    field: 'creado_por'
   },
   actualizadoPor: {
     type: DataTypes.STRING,
     allowNull: true,
-    field: 'actualizadopor'
+    field: 'actualizado_por'
   }
 }, {
   tableName: 'receptor',
   timestamps: true,
-  createdAt: 'fechacreacion',
-  updatedAt: 'fechaactualizacion'
+  createdAt: 'fecha_creacion',
+  updatedAt: 'fecha_actualizacion'
 });
 
 export default Receptor;

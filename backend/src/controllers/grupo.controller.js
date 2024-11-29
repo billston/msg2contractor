@@ -1,5 +1,6 @@
 import { createGrupoSchema, updateGrupoSchema, addMiembroSchema } from '../schemas/grupo.schema.js';
 import { GrupoService } from '../services/grupo.service.js';
+import { handleError } from '../utils/errorHandler.js';
 
 export class GrupoController {
   static async create(req, res) {
@@ -11,10 +12,7 @@ export class GrupoController {
       });
       res.status(201).json(grupo);
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ errors: error.errors });
-      }
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -34,10 +32,7 @@ export class GrupoController {
 
       res.json(grupo);
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ errors: error.errors });
-      }
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -59,7 +54,7 @@ export class GrupoController {
 
       res.json({ message: 'Grupo eliminado exitosamente' });
     } catch (error) {
-      throw error;
+      handleError(res, error);
     }
   }
 
@@ -72,7 +67,7 @@ export class GrupoController {
       });
       res.json(grupos);
     } catch (error) {
-      throw error;
+      handleError(res, error);
     }
   }
 
