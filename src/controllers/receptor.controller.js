@@ -82,10 +82,9 @@ export class ReceptorController {
 
   static async findAll(req, res) {
     try {
-      const { codigo, nombreCompleto } = req.query;
+      const { search } = req.query;
       const receptores = await ReceptorService.findAll({
-        codigo,
-        nombreCompleto,
+        search
       });
       res.json(receptores);
     } catch (error) {

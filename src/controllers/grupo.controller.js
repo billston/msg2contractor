@@ -60,10 +60,9 @@ export class GrupoController {
 
   static async findAll(req, res) {
     try {
-      const { nombre, nombreMiembro } = req.query;
+      const { search } = req.query;
       const grupos = await GrupoService.findAll({
-        nombre,
-        nombreMiembro,
+        search
       });
       res.json(grupos);
     } catch (error) {
@@ -136,6 +135,7 @@ export class GrupoController {
     try {
       const { id } = req.params;
       const miembros = await GrupoService.getMiembros(id);
+      console.log("miembros: ", miembros);
       res.json(miembros);
     } catch (error) {
       throw error;

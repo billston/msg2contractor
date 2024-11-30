@@ -39,29 +39,31 @@ export class GrupoService {
     return GrupoReceptor.findByPk(id);
   }
 
-  static async findAll({ nombre, nombreMiembro }) {
-    const include = [];
-    const where = {};
+  static async findAll({ search }) {
+    // Primero, buscar en el nombre del grupo
+    const grupos = await GrupoReceptor.findAll({
+      where: {
+        nombre: { [Op.iLike]: `%${search}%` }
+      },
+      order: [['nombre', 'ASC']]
+    });
 
-    if (nombre) {
-      where.nombre = { [Op.iLike]: `%${nombre}%` };
-    }
-
-    if (nombreMiembro) {
-      include.push({
-        model: Receptor,
-        where: {
-          nombreCompleto: { [Op.iLike]: `%${nombreMiembro}%` }
-        },
-        through: { attributes: [] }
+    // Si no se encontraron grupos, buscar en el nombreCompleto del receptor
+    if (grupos.length === 0) {
+      return GrupoReceptor.findAll({
+        include: [{
+          model: Receptor,
+          where: {
+            nombreCompleto: { [Op.iLike]: `%${search}%` }
+          },
+          through: { attributes: [] }, // Asegúrate de que esto sea correcto según tu modelo
+          required: true // Asegurarse de que se incluyan solo grupos con receptores
+        }],
+        order: [['nombre', 'ASC']]
       });
     }
 
-    return GrupoReceptor.findAll({
-      where,
-      include,
-      order: [['nombre', 'ASC']]
-    });
+    return grupos;
   }
 
   static async hasComunicados(id) {
@@ -96,14 +98,15 @@ export class GrupoService {
   }
 
   static async getMiembros(idGrupoReceptor) {
-    const grupo = await GrupoReceptor.findByPk(idGrupoReceptor, {
+    const miembros = await Miembro.findAll({
+      where: { idGrupoReceptor },
       include: [{
-        model: Receptor,
-        through: { attributes: [] }
+          model: Receptor,
+          required: true
       }]
     });
 
-    return grupo?.Receptores || [];
+    return miembros.map(miembro => miembro.Receptor);
   }
 
   static async isMiembro(idGrupoReceptor, idReceptor) {

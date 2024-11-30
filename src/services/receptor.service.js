@@ -62,19 +62,17 @@ export class ReceptorService {
     return Receptor.findByPk(id);
   }
 
-  static async findAll({ codigo, nombreCompleto }) {
-    const where = {};
-
-    if (codigo) {
-      where.codigo = { [Op.iLike]: `%${codigo}%` };
-    }
-
-    if (nombreCompleto) {
-      where.nombreCompleto = { [Op.iLike]: `%${nombreCompleto}%` };
-    }
+  static async findAll({ search }) {
+    const where = search?.trim() ? {
+      [Op.or]: [
+        { codigo: { [Op.iLike]: `%${search}%` } },
+        { nombreCompleto: { [Op.iLike]: `%${search}%` } },
+        { correoElectronico: { [Op.iLike]: `%${search}%` } }
+      ]
+    } : { [Op.or]: [] };
 
     return Receptor.findAll({
-      where,
+      ...(where[Op.or].length ? { where } : {}),
       order: [['nombreCompleto', 'ASC']]
     });
   }

@@ -45,8 +45,4 @@ const Miembro = sequelize.define('Miembro', {
   updatedAt: 'fecha_actualizacion'
 });
 
-// Define associations
-GrupoReceptor.belongsToMany(Receptor, { through: Miembro, foreignKey: 'id_grupo_receptor' });
-Receptor.belongsToMany(GrupoReceptor, { through: Miembro, foreignKey: 'id_receptor' });
-
 export default Miembro;
