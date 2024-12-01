@@ -6,7 +6,7 @@ export const createComunicadoSchema = z.object({
   destinatario: z.string().optional(),
   asunto: z.string().min(1, 'El asunto es requerido'),
   contenido: z.string().min(1, 'El contenido es requerido'),
-  fechaVencimiento: z.string().datetime().optional(),
+  fechaVencimiento: z.string().date().optional(),
   confirmacionRecepcion: z.boolean(),
   solicitarRespuesta: z.boolean(),
 });

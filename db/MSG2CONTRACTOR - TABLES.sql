@@ -49,7 +49,7 @@ CREATE TABLE comunicado (
     contenido TEXT NOT NULL,
     adjunto VARCHAR(200),
     fecha_emision TIMESTAMP,
-    fecha_vencimiento TIMESTAMP,
+    fecha_vencimiento DATE,
     confirmacion_recepcion BOOLEAN NOT NULL,
     solicitar_respuesta BOOLEAN NOT NULL,
     id_estado_comunicado INT NOT NULL, -- 1: borrador, 2: confirmado
@@ -60,6 +60,7 @@ CREATE TABLE comunicado (
     CONSTRAINT fk_grupo_receptor_comunicado FOREIGN KEY (id_grupo_receptor) REFERENCES grupo_receptor(id_grupo_receptor),
     CONSTRAINT fk_estado_comunicado_comunicado FOREIGN KEY (id_estado_comunicado) REFERENCES estado_comunicado(id_estado_comunicado)
 );
+--ALTER TABLE comunicado ALTER COLUMN fecha_vencimiento TYPE DATE USING fecha_vencimiento::DATE;
 
 CREATE TABLE estado_notificacion (
     id_estado_notificacion INT PRIMARY KEY,

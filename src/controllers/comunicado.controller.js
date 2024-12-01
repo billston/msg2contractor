@@ -5,7 +5,10 @@ import { handleError } from '../utils/errorHandler.js';
 export class ComunicadoController {
   static async create(req, res) {
     try {
-      const data = createComunicadoSchema.parse(JSON.parse(req.body.data));
+      const parseData = JSON.parse(req.body.data);
+      parseData.fechaVencimiento === "" && delete parseData.fechaVencimiento;
+      
+      const data = createComunicadoSchema.parse(parseData);
       let adjunto = null;
 
       if (req.files?.adjunto) {
